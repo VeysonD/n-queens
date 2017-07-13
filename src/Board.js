@@ -133,15 +133,11 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+    hasMajorDiagonalConflictAt: function(matrixCoordinates) {
       var diagonal = [];
       var matrixLength = this.attributes.n;
-      var i, j, n;
-      //passed in value is a matrix;
-      //rows = i;
-      //col = j;
-      //special case is the biggest diagonal
-      if (majorDiagonalColumnIndexAtFirstRow[0] === 0 && majorDiagonalColumnIndexAtFirstRow[1] === 0) {
+      var i, j;
+      if (matrixCoordinates[0] === 0 && matrixCoordinates[1] === 0) {
         i = 0;
         j = 0;
         while (j < matrixLength) {
@@ -152,67 +148,39 @@
         var conflictCount = diagonal.reduce(function(add, num) {
           return add + num;
         });
-        return conflictCount > 1 ? true : false;
-      } else if (majorDiagonalColumnIndexAtFirstRow[0] === 0) { //going to the right
+        return conflictCount > 1;
+      } else if (matrixCoordinates[0] === 0) { //going to the right
         i = 0;
-        j = majorDiagonalColumnIndexAtFirstRow[1]; //because the passed in value is a matrix
-        n = j;
-        diagonal.push(this.get(i)[j]);
+        j = matrixCoordinates[1];
         //generating the diagonal
-        while (n < matrixLength) {
+        while (j < matrixLength) {
+          diagonal.push(this.get(i)[j]);
           i += 1;
           j += 1;
-          diagonal.push(this.get(i)[j]);
-          n += 2;
         }
         //console.log(diagonal);
         var conflictCount = diagonal.reduce(function(add, num) {
           return add + num;
         });
-        return conflictCount > 1 ? true : false;
+        return conflictCount > 1;
       } else { //going down
-        i = majorDiagonalColumnIndexAtFirstRow[0];
+        i = matrixCoordinates[0];
         j = 0;
-        n = i;
-        diagonal.push(this.get(i)[j]);
         //generating the diagonal
-        while (n < matrixLength) {
+        while (i < matrixLength) {
+          diagonal.push(this.get(i)[j]);
           i += 1;
           j += 1;
-          diagonal.push(this.get(i)[j]);
-          n += 2;
         }
         var conflictCount = diagonal.reduce(function(add, num) {
           return add + num;
         });
-        return conflictCount > 1 ? true : false;
+        return conflictCount > 1;
       }
-
-
-
-      //build a diagonal by iterating over it once
-        //go right if the first value is 0;
-        //go down if the first value is 1;
-      //for loop possibly
-        //diagElement = this.get()
-      //iterate over the diagonal array to check if there are any conflicts
-
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      //major diagonals grow by a length of 2 for every increase of matrix length 1
-        //matrix.length === 1 (special case);
-        //matrix.length === 2 (1 majorDiag);
-        //matrix.length === 3 (3 majorDiag);
-        //matrix.length === 4 (5 majorDiag);
-        //matrix.length === 5 (7 majorDiag);
-      //first get length of matrix
-      //then find number of majorDiag and save to variable
-      //this is how many times you iterate
-      //first go right
-      //then go down
-      debugger;
       var matrixLength = this.attributes.n;
       //maybe add a base case here for matrixLength === 1;
       var numMajorDiagonals = (matrixLength - 2) * 2 + 1;
@@ -221,14 +189,12 @@
 
       //going right
       for (var i = 0; i < numMajorDiagonalsRow; i += 1) {
-        //call upon hasMajorDiagonalConflictAt() here possibly
         if (this.hasMajorDiagonalConflictAt([0, i])) {
           return true;
         }
       }
       //going down
       for (var j = 1; j < numMajorDiagonalsCol + 1; j += 1) { //adding a +1 to compensate for j starting at 1.
-        //call upon hasMajorDiagonalConflictAt() here possibly
         if (this.hasMajorDiagonalConflictAt([j, 0])) {
           return true;
         }
@@ -244,12 +210,73 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var diagonal = [];
+      var matrixLength = this.attributes.n;
+      var i, j;
+      if (minorDiagonalColumnIndexAtFirstRow[0] === matrixLength - 1 && minorDiagonalColumnIndexAtFirstRow[1] === 0) {
+        i = matrixLength - 1;
+        j = 0;
+        while (j < matrixLength) {
+          diagonal.push(this.get(i)[j]);
+          i -= 1;
+          j += 1;
+        }
+        var conflictCount = diagonal.reduce(function(add, num) {
+          return add + num;
+        });
+        return conflictCount > 1;
+      } else if (minorDiagonalColumnIndexAtFirstRow[0] === matrixLength - 1) { //going to the right
+        i = matrixLength - 1;
+        j = minorDiagonalColumnIndexAtFirstRow[1];
+        while (j < matrixLength) {
+          diagonal.push(this.get(i)[j]);
+          j += 1;
+          i -= 1;
+        }
+        //console.log(diagonal);
+        var conflictCount = diagonal.reduce(function(add, num) {
+          return add + num;
+        });
+        return conflictCount > 1;
+      } else { //going up
+        i = minorDiagonalColumnIndexAtFirstRow[0];
+        j = 0;
+        while (i > -1) {
+          diagonal.push(this.get(i)[j]);
+          i -= 1;
+          j += 1;
+
+        }
+        var conflictCount = diagonal.reduce(function(add, num) {
+          return add + num;
+        });
+        return conflictCount > 1;
+      }
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var matrixLength = this.attributes.n;
+      var numMajorDiagonals = (matrixLength - 2) * 2 + 1;
+      var numMajorDiagonalsRow = numMajorDiagonals - 2; //3
+      var numMajorDiagonalsCol = numMajorDiagonals - numMajorDiagonalsRow; //2
+
+      //going right
+      for (var j = 0; j < matrixLength; j += 1) {
+        //call upon hasMajorDiagonalConflictAt() here possibly
+        if (this.hasMinorDiagonalConflictAt([matrixLength - 1, j])) {
+          return true;
+        }
+      }
+      //going up
+      for (var i = matrixLength - 2; i > -1; i -= 1) { //adding a +1 to compensate for j starting at 1.
+        //call upon hasMajorDiagonalConflictAt() here possibly
+        if (this.hasMinorDiagonalConflictAt([i, 0])) {
+          return true;
+        }
+      }
+      //if you survive all these loops, return false;
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
