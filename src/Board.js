@@ -60,8 +60,6 @@
         0 <= colIndex && colIndex < this.get('n')
       );
     },
-
-
 /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
@@ -107,12 +105,26 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var matrixLength = this.attributes.n;
+      var column = [];
+      for (var i = 0; i < matrixLength; i += 1) {
+        column.push(this.get(i)[colIndex]);
+      }
+      var conflictCount = column.reduce(function(add, num) {
+        return add + num;
+      });
+      return conflictCount > 1 ? true : false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var matrixLength = this.attributes.n;
+      for (var i = 0; i < matrixLength; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
