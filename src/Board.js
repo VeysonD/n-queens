@@ -60,7 +60,7 @@
         0 <= colIndex && colIndex < this.get('n')
       );
     },
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -174,7 +174,7 @@
         }
         var conflictCount = diagonal.reduce(function(add, num) {
           return add + num;
-        });
+        }, 0);
         return conflictCount > 1;
       }
     },
@@ -233,7 +233,6 @@
           j += 1;
           i -= 1;
         }
-        //console.log(diagonal);
         var conflictCount = diagonal.reduce(function(add, num) {
           return add + num;
         });
@@ -249,7 +248,7 @@
         }
         var conflictCount = diagonal.reduce(function(add, num) {
           return add + num;
-        });
+        }, 0);
         return conflictCount > 1;
       }
     },
@@ -258,19 +257,17 @@
     hasAnyMinorDiagonalConflicts: function() {
       var matrixLength = this.attributes.n;
       var numMajorDiagonals = (matrixLength - 2) * 2 + 1;
-      var numMajorDiagonalsRow = numMajorDiagonals - 2; //3
-      var numMajorDiagonalsCol = numMajorDiagonals - numMajorDiagonalsRow; //2
+      var numMajorDiagonalsRow = numMajorDiagonals - 2;
+      var numMajorDiagonalsCol = numMajorDiagonals - numMajorDiagonalsRow;
 
       //going right
       for (var j = 0; j < matrixLength; j += 1) {
-        //call upon hasMajorDiagonalConflictAt() here possibly
         if (this.hasMinorDiagonalConflictAt([matrixLength - 1, j])) {
           return true;
         }
       }
       //going up
       for (var i = matrixLength - 2; i > -1; i -= 1) { //adding a +1 to compensate for j starting at 1.
-        //call upon hasMajorDiagonalConflictAt() here possibly
         if (this.hasMinorDiagonalConflictAt([i, 0])) {
           return true;
         }
